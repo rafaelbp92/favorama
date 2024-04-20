@@ -52,7 +52,7 @@ const LocationPicker = () => {
   }
 
   function pickOnMapHandler() {
-    navigation.navigate('Map');
+    navigation.navigate('Map' as never);
   }
 
   let locationPreview = <Text>No location picked</Text>;
