@@ -6,19 +6,40 @@ import {
 } from "expo-location";
 import OutlinedButton from "../ui/OutlinedButton";
 import { Colors } from "../../constants/Colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getMapPreview } from "../../utils/location";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
 
 type Location = {
   lat: number;
   lng: number;
 };
 
-const LocationPicker = () => {
+export type Props = {
+  onPickLocation: (a: any) => void;
+};
+
+const LocationPicker = ({ onPickLocation }: Props) => {
   const [pickedLocation, setPickedLocation] = useState<Location | undefined>();
   const [locationPermission, requestPermission] = useForegroundPermissions();
   const navigation = useNavigation();
+  const route = useRoute<any>();
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    const mapPickedlocation = isFocused && route.params && {
+      lat: route.params.pickedLocation.latitude,
+      lng: route.params.pickedLocation.longitude,
+    };
+
+    if (mapPickedlocation) {
+      setPickedLocation(mapPickedlocation);
+    }
+  }, [route, isFocused]);
+
+  useEffect(() => {
+    onPickLocation(pickedLocation);
+  }, [pickedLocation, onPickLocation]);
 
   async function verifyPermissions() {
     if (locationPermission?.status === PermissionStatus.UNDETERMINED) {
@@ -52,7 +73,7 @@ const LocationPicker = () => {
   }
 
   function pickOnMapHandler() {
-    navigation.navigate('Map' as never);
+    navigation.navigate("Map" as never);
   }
 
   let locationPreview = <Text>No location picked</Text>;
@@ -101,6 +122,6 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
-    borderRadius: 4
+    borderRadius: 4,
   },
 });
