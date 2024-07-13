@@ -66,6 +66,7 @@ const LocationPicker = ({ onPickLocation }: Props) => {
       return;
     }
     const location = await getCurrentPositionAsync();
+    console.log('user location', location);
     setPickedLocation({
       lat: location.coords.latitude,
       lng: location.coords.longitude,
@@ -79,6 +80,7 @@ const LocationPicker = ({ onPickLocation }: Props) => {
   let locationPreview = <Text>No location picked</Text>;
 
   if (pickedLocation) {
+    console.log('location is picked', pickedLocation)
     locationPreview = (
       <Image
         style={styles.image}

@@ -1,17 +1,17 @@
 import PlaceForm from "../components/Places/PlaceForm";
 
 export type Props = {
-    navigation: any;
+  navigation: any;
 };
 
 const AddPlace = ({ navigation }: Props) => {
-    function createPlaceHandler(place: any) {
-        navigation.navigate('AllPlaces', {
-            place,
-        });
-    }
+  function createPlaceHandler(place: any) {
+    navigation.navigate("AllPlaces", {
+      place,
+    });
+  }
 
-    return <PlaceForm onCreatePlace={createPlaceHandler}/>;
-}
+  return <PlaceForm onCreatePlace={createPlaceHandler} />;
+};
 
 export default AddPlace;

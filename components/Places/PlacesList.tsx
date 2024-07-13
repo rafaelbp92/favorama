@@ -19,6 +19,7 @@ const PlacesList: React.FC<Props> = ({ places }) => {
 
   return (
     <FlatList
+      style={styles.list}
       data={places}
       renderItem={({ item }) => <PlaceItem place={item} onSelect={() => {}}/>}
       keyExtractor={(item: Place) => {
@@ -31,6 +32,9 @@ const PlacesList: React.FC<Props> = ({ places }) => {
 export default PlacesList;
 
 const styles = StyleSheet.create({
+  list: {
+    margin: 2,
+  },
     fallbackContainer: {
         flex: 1,
         justifyContent: 'center',
