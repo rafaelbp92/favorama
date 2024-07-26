@@ -55,3 +55,39 @@ export function insertPlace(place: Place) {
 
   return promise;
 }
+
+export function fetchPlaces() {
+  console.log("fetchPlaces");
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        `SELECT * FROM places`,
+        [],
+        (_, result) => {
+          console.log("fetch result", result);
+          const places = [];
+          for (const item of result.rows._array) {
+            places.push({
+              title: item.title,
+              imageUri: item.imageUri,
+              address: item.address,
+              location: {
+                latitude: item.lat,
+                longitude: item.lng,
+              },
+              id: item.id,
+            } as Place);
+          }
+          resolve(places);
+        },
+        (_, error) => {
+          console.log("fetch errror", error);
+          reject(error);
+          return false;
+        }
+      );
+    });
+  });
+
+  return promise;
+}

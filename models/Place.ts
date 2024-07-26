@@ -1,7 +1,7 @@
 import { MapLocation } from "./Location";
 
 class Place {
-  id: string;
+  id!: string;
   title: string;
   imageUri: string;
   address: string;
@@ -11,7 +11,6 @@ class Place {
     this.imageUri = imageUri;
     this.address = location.address;
     this.location = { latitude: location.lat, longitude: location.lng };
-    this.id = new Date().toString() + Math.random().toString();
   }
 }
 

@@ -9,9 +9,7 @@ export type Props = {
 const AddPlace = ({ navigation }: Props) => {
   function createPlaceHandler(place: Place) {
     insertPlace(place).then(() => {
-      navigation.navigate("AllPlaces", {
-        place
-      });
+      navigation.navigate("AllPlaces");
     })
   }
 
