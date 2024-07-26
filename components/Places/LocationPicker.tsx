@@ -7,8 +7,12 @@ import {
 import OutlinedButton from "../ui/OutlinedButton";
 import { Colors } from "../../constants/Colors";
 import { useEffect, useState } from "react";
-import { getMapPreview } from "../../utils/location";
-import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
+import { getAddress, getMapPreview } from "../../utils/location";
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 
 type Location = {
   lat: number;
@@ -27,10 +31,11 @@ const LocationPicker = ({ onPickLocation }: Props) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    const mapPickedlocation = isFocused && route.params && {
-      lat: route.params.pickedLocation.latitude,
-      lng: route.params.pickedLocation.longitude,
-    };
+    const mapPickedlocation = isFocused &&
+      route.params && {
+        lat: route.params.pickedLocation.latitude,
+        lng: route.params.pickedLocation.longitude,
+      };
 
     if (mapPickedlocation) {
       setPickedLocation(mapPickedlocation);
@@ -38,7 +43,17 @@ const LocationPicker = ({ onPickLocation }: Props) => {
   }, [route, isFocused]);
 
   useEffect(() => {
-    onPickLocation(pickedLocation);
+    async function handleLocation() {
+      if (pickedLocation) {
+        const address = await getAddress(
+          pickedLocation.lat,
+          pickedLocation.lng
+        );
+        onPickLocation({ ...pickedLocation, address });
+      }
+    }
+
+    handleLocation();
   }, [pickedLocation, onPickLocation]);
 
   async function verifyPermissions() {
@@ -66,7 +81,6 @@ const LocationPicker = ({ onPickLocation }: Props) => {
       return;
     }
     const location = await getCurrentPositionAsync();
-    console.log('user location', location);
     setPickedLocation({
       lat: location.coords.latitude,
       lng: location.coords.longitude,
@@ -80,7 +94,6 @@ const LocationPicker = ({ onPickLocation }: Props) => {
   let locationPreview = <Text>No location picked</Text>;
 
   if (pickedLocation) {
-    console.log('location is picked', pickedLocation)
     locationPreview = (
       <Image
         style={styles.image}
