@@ -63,7 +63,6 @@ export function fetchPlaces() {
         `SELECT * FROM places`,
         [],
         (_, result) => {
-          console.log("fetch result", result);
           const places = [];
           for (const item of result.rows._array) {
             places.push({
