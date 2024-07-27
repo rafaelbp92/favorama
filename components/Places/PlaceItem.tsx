@@ -4,12 +4,15 @@ import { Colors } from "../../constants/Colors";
 
 export type Props = {
   place: Place;
-  onSelect: () => void ;
+  onSelect: (placeId: string) => void;
 };
 
 const PlaceItem: React.FC<Props> = ({ place, onSelect }) => {
   return (
-    <Pressable style={({pressed}) => [styles.item, pressed && styles.pressed]} onPress={onSelect}>
+    <Pressable
+      style={({ pressed }) => [styles.item, pressed && styles.pressed]}
+      onPress={onSelect.bind(this, place.id)}
+    >
       <Image style={styles.image} source={{ uri: place.imageUri }} />
       <View style={styles.info}>
         <Text style={styles.title}>{place.title}</Text>
