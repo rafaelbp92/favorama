@@ -1,43 +1,43 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import OutlinedButton from "../components/ui/OutlinedButton";
-import { Colors } from "../constants/Colors";
-import { useEffect, useState } from "react";
-import { fetchPlaceDetails } from "../utils/database";
-import Place from "../models/Place";
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import OutlinedButton from '../components/ui/OutlinedButton'
+import { Colors } from '../constants/Colors'
+import { useEffect, useState } from 'react'
+import { fetchPlaceDetails } from '../utils/database'
+import type Place from '../models/Place'
 
-export type Props = {
-  route: any;
-  navigation: any;
-};
+export interface Props {
+  route: any
+  navigation: any
+}
 
-function PlaceDetails({ route, navigation }: Props) {
-  const [place, setPlace] = useState<Place>();
-  function showOnMapHandler() {
-    navigation.navigate("Map", {
+function PlaceDetails ({ route, navigation }: Props): React.JSX.Element {
+  const [place, setPlace] = useState<Place>()
+  function showOnMapHandler (): void {
+    navigation.navigate('Map', {
       initialLat: place?.location.latitude,
-      initialLng: place?.location.longitude,
-    });
+      initialLng: place?.location.longitude
+    })
   }
 
-  const selectedPlaceId = route.params.placeId;
+  const selectedPlaceId = route.params.placeId
   useEffect(() => {
-    async function loadPlaceData() {
-      const placeDetails = await fetchPlaceDetails(selectedPlaceId);
-      setPlace(placeDetails);
+    async function loadPlaceData (): Promise<void> {
+      const placeDetails = await fetchPlaceDetails(selectedPlaceId)
+      setPlace(placeDetails)
       navigation.setOptions({
-        title: placeDetails.title,
-      });
+        title: placeDetails.title
+      })
     }
 
-    loadPlaceData();
-  }, [selectedPlaceId]);
+    loadPlaceData()
+  }, [selectedPlaceId])
 
   if (!place) {
     return (
       <View style={styles.fallback}>
         <Text>Loading place data...</Text>
       </View>
-    );
+    )
   }
 
   return (
@@ -52,33 +52,33 @@ function PlaceDetails({ route, navigation }: Props) {
         View on Map
       </OutlinedButton>
     </ScrollView>
-  );
+  )
 }
 
-export default PlaceDetails;
+export default PlaceDetails
 
 const styles = StyleSheet.create({
   fallback: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
-    height: "35%",
+    height: '35%',
     minHeight: 300,
-    width: "100%",
+    width: '100%'
   },
   locationContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   addressContainer: {
-    padding: 20,
+    padding: 20
   },
   address: {
     color: Colors.primary500,
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-});
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16
+  }
+})

@@ -3,7 +3,7 @@ import type Place from '../models/Place'
 
 const database = SQLite.openDatabase('places.db')
 
-export async function init () {
+export async function init (): Promise<unknown> {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
@@ -30,7 +30,7 @@ export async function init () {
   return await promise
 }
 
-export async function insertPlace (place: Place) {
+export async function insertPlace (place: Place): Promise<unknown> {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
@@ -56,8 +56,8 @@ export async function insertPlace (place: Place) {
   return await promise
 }
 
-export async function fetchPlaces () {
-  const promise = new Promise((resolve, reject) => {
+export async function fetchPlaces (): Promise<Place[]> {
+  const promise = new Promise<Place[]>((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
         'SELECT * FROM places',
@@ -65,7 +65,7 @@ export async function fetchPlaces () {
         (_, result) => {
           const places = []
           for (const item of result.rows._array) {
-            places.push({
+            const place = {
               title: item.title,
               imageUri: item.imageUri,
               address: item.address,
@@ -74,7 +74,8 @@ export async function fetchPlaces () {
                 longitude: item.lng
               },
               id: item.id
-            } as Place)
+            }
+            places.push(place)
           }
           resolve(places)
         },
@@ -90,7 +91,7 @@ export async function fetchPlaces () {
   return await promise
 }
 
-export async function fetchPlaceDetails (placeId: string) {
+export async function fetchPlaceDetails (placeId: string): Promise<Place> {
   const promise = new Promise<Place>((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
@@ -98,7 +99,7 @@ export async function fetchPlaceDetails (placeId: string) {
         [placeId],
         (_, result) => {
           const place = result.rows._array[0]
-          resolve({
+          const placeDb = {
             title: place.title,
             imageUri: place.imageUri,
             address: place.address,
@@ -107,7 +108,8 @@ export async function fetchPlaceDetails (placeId: string) {
               longitude: place.lng
             },
             id: place.id
-          } as Place)
+          }
+          resolve(placeDb)
         },
         (_, error) => {
           reject(error)

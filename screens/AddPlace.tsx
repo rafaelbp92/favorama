@@ -6,10 +6,13 @@ export interface Props {
   navigation: any
 }
 
-const AddPlace = ({ navigation }: Props) => {
-  function createPlaceHandler (place: Place) {
+const AddPlace: React.FC<Props> = ({ navigation }: Props) => {
+  function createPlaceHandler (place: Place): void {
     insertPlace(place).then(() => {
       navigation.navigate('AllPlaces')
+    },
+    (error) => {
+      console.log(error)
     })
   }
 

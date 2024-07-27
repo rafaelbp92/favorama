@@ -1,35 +1,35 @@
-import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { Colors } from "../../constants/Colors";
-import ImagePicker from "./ImagePicker";
-import LocationPicker from "./LocationPicker";
-import Place from "../../models/Place";
-import Button from "../ui/Button";
+import { useCallback, useState } from 'react'
+import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Colors } from '../../constants/Colors'
+import ImagePicker from './ImagePicker'
+import LocationPicker from './LocationPicker'
+import Place from '../../models/Place'
+import Button from '../ui/Button'
 
-export type Props = {
-  onCreatePlace: (place: Place) => void;
-};
+export interface Props {
+  onCreatePlace: (place: Place) => void
+}
 
 const PlaceForm = ({ onCreatePlace }: Props) => {
-  const [enteredTitle, setEnteredTitle] = useState("");
-  const [selectedImage, setSelectedImage] = useState("");
-  const [pickedLocation, setPickedLocation] = useState();
+  const [enteredTitle, setEnteredTitle] = useState('')
+  const [selectedImage, setSelectedImage] = useState('')
+  const [pickedLocation, setPickedLocation] = useState()
 
-  function changeTitleRender(enteredText: string) {
-    setEnteredTitle(enteredText);
+  function changeTitleRender (enteredText: string) {
+    setEnteredTitle(enteredText)
   }
 
-  function imageTakenHandller(imageUri: string) {
-    setSelectedImage(imageUri);
+  function imageTakenHandller (imageUri: string) {
+    setSelectedImage(imageUri)
   }
 
   const pickLocationHandler = useCallback((location: any) => {
-    setPickedLocation(location);
-  }, []);
+    setPickedLocation(location)
+  }, [])
 
-  function savePlaceHandler() {
-    const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
-    onCreatePlace(placeData);
+  function savePlaceHandler () {
+    const placeData = new Place(enteredTitle, selectedImage, pickedLocation)
+    onCreatePlace(placeData)
   }
 
   return (
@@ -46,22 +46,22 @@ const PlaceForm = ({ onCreatePlace }: Props) => {
         <Button onPress={savePlaceHandler}>Add Place</Button>
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
-export default PlaceForm;
+export default PlaceForm
 
 const styles = StyleSheet.create({
   form: {
-    flex: 1,
+    flex: 1
   },
   formView: {
-    padding: 24,
+    padding: 24
   },
   label: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 4,
-    color: Colors.primary500,
+    color: Colors.primary500
   },
   input: {
     marginVertical: 8,
@@ -69,6 +69,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     fontSize: 16,
     borderBottomColor: Colors.primary700,
-    backgroundColor: Colors.primary100,
-  },
-});
+    backgroundColor: Colors.primary100
+  }
+})

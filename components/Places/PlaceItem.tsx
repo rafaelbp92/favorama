@@ -1,11 +1,11 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import Place from "../../models/Place";
-import { Colors } from "../../constants/Colors";
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import type Place from '../../models/Place'
+import { Colors } from '../../constants/Colors'
 
-export type Props = {
-  place: Place;
-  onSelect: (placeId: string) => void;
-};
+export interface Props {
+  place: Place
+  onSelect: (placeId: string) => void
+}
 
 const PlaceItem: React.FC<Props> = ({ place, onSelect }) => {
   return (
@@ -19,44 +19,44 @@ const PlaceItem: React.FC<Props> = ({ place, onSelect }) => {
         <Text style={styles.address}>{place.address}</Text>
       </View>
     </Pressable>
-  );
-};
+  )
+}
 
-export default PlaceItem;
+export default PlaceItem
 
 const styles = StyleSheet.create({
   item: {
-    flexDirection: "row",
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     borderRadius: 6,
     marginVertical: 12,
     backgroundColor: Colors.primary500,
     elevation: 2,
-    shadowColor: "black",
+    shadowColor: 'black',
     shadowOpacity: 0.15,
     shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 2,
+    shadowRadius: 2
   },
   pressed: {
-    opacity: 0.7,
+    opacity: 0.7
   },
   image: {
     flex: 1,
     borderBottomLeftRadius: 4,
     borderTopLeftRadius: 4,
-    height: 100,
+    height: 100
   },
   info: {
     flex: 2,
-    padding: 12,
+    padding: 12
   },
   title: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 18,
-    color: Colors.gray700,
+    color: Colors.gray700
   },
   address: {
     fontSize: 12,
-    color: Colors.gray700,
-  },
-});
+    color: Colors.gray700
+  }
+})

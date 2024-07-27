@@ -8,17 +8,17 @@ export interface Props {
   route: any
 }
 
-function AllPlaces ({ route }: Props) {
+const AllPlaces: React.FC<Props> = ({ route }: Props) => {
   const isFocused = useIsFocused()
   const [loadedPlaces, setLoadedPlaces] = useState<Place[]>([])
   useEffect(() => {
-    async function loadPlaces () {
+    async function loadPlaces (): Promise<void> {
       const places = await fetchPlaces()
-      setLoadedPlaces(places as Place[])
+      setLoadedPlaces(places)
     }
 
     if (isFocused) {
-      loadPlaces()
+      void loadPlaces()
     }
   }, [isFocused, route])
   return <PlacesList places={loadedPlaces} />
