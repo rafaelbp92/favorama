@@ -1,9 +1,9 @@
-import * as SQLite from "expo-sqlite";
-import Place from "../models/Place";
+import * as SQLite from 'expo-sqlite'
+import type Place from '../models/Place'
 
-const database = SQLite.openDatabase("places.db");
+const database = SQLite.openDatabase('places.db')
 
-export function init() {
+export async function init () {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
@@ -17,53 +17,53 @@ export function init() {
         )`,
         [],
         () => {
-          resolve(null);
+          resolve(null)
         },
         (_, error) => {
-          reject(error);
-          return false;
+          reject(error)
+          return false
         }
-      );
-    });
-  });
+      )
+    })
+  })
 
-  return promise;
+  return await promise
 }
 
-export function insertPlace(place: Place) {
+export async function insertPlace (place: Place) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        `INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?)`,
+        'INSERT INTO places (title, imageUri, address, lat, lng) VALUES (?, ?, ?, ?, ?)',
         [
           place.title,
           place.imageUri,
           place.address,
           place.location.latitude,
-          place.location.longitude,
+          place.location.longitude
         ],
         (_, result) => {
-          resolve(result);
+          resolve(result)
         },
         (_, error) => {
-          reject(error);
-          return false;
+          reject(error)
+          return false
         }
-      );
-    });
-  });
+      )
+    })
+  })
 
-  return promise;
+  return await promise
 }
 
-export function fetchPlaces() {
+export async function fetchPlaces () {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        `SELECT * FROM places`,
+        'SELECT * FROM places',
         [],
         (_, result) => {
-          const places = [];
+          const places = []
           for (const item of result.rows._array) {
             places.push({
               title: item.title,
@@ -71,51 +71,51 @@ export function fetchPlaces() {
               address: item.address,
               location: {
                 latitude: item.lat,
-                longitude: item.lng,
+                longitude: item.lng
               },
-              id: item.id,
-            } as Place);
+              id: item.id
+            } as Place)
           }
-          resolve(places);
+          resolve(places)
         },
         (_, error) => {
-          console.log("fetch errror", error);
-          reject(error);
-          return false;
+          console.log('fetch errror', error)
+          reject(error)
+          return false
         }
-      );
-    });
-  });
+      )
+    })
+  })
 
-  return promise;
+  return await promise
 }
 
-export function fetchPlaceDetails(placeId: string) {
+export async function fetchPlaceDetails (placeId: string) {
   const promise = new Promise<Place>((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        `SELECT * FROM places WHERE id = ?`,
+        'SELECT * FROM places WHERE id = ?',
         [placeId],
         (_, result) => {
-          const place = result.rows._array[0];
+          const place = result.rows._array[0]
           resolve({
             title: place.title,
             imageUri: place.imageUri,
             address: place.address,
             location: {
               latitude: place.lat,
-              longitude: place.lng,
+              longitude: place.lng
             },
-            id: place.id,
-          } as Place);
+            id: place.id
+          } as Place)
         },
         (_, error) => {
-          reject(error);
-          return false;
+          reject(error)
+          return false
         }
-      );
-    });
-  });
+      )
+    })
+  })
 
-  return promise;
+  return await promise
 }
