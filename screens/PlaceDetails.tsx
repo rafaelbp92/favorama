@@ -12,7 +12,13 @@ export type Props = {
 
 function PlaceDetails({ route, navigation }: Props) {
   const [place, setPlace] = useState<Place>();
-  function showOnMapHandler() {}
+  function showOnMapHandler() {
+    navigation.navigate("Map", {
+      initialLat: place?.location.latitude,
+      initialLng: place?.location.longitude,
+    });
+  }
+
   const selectedPlaceId = route.params.placeId;
   useEffect(() => {
     async function loadPlaceData() {
