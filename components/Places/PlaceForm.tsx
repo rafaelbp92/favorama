@@ -5,30 +5,33 @@ import ImagePicker from './ImagePicker'
 import LocationPicker from './LocationPicker'
 import Place from '../../models/Place'
 import Button from '../ui/Button'
+import { type MapLocation } from '../../models/Location'
 
 export interface Props {
   onCreatePlace: (place: Place) => void
 }
 
-const PlaceForm = ({ onCreatePlace }: Props) => {
+const PlaceForm: React.FC<Props> = ({ onCreatePlace }: Props) => {
   const [enteredTitle, setEnteredTitle] = useState('')
   const [selectedImage, setSelectedImage] = useState('')
-  const [pickedLocation, setPickedLocation] = useState()
+  const [pickedLocation, setPickedLocation] = useState<MapLocation>()
+  const [address, setAddress] = useState<string>('')
 
-  function changeTitleRender (enteredText: string) {
+  function changeTitleRender (enteredText: string): void {
     setEnteredTitle(enteredText)
   }
 
-  function imageTakenHandller (imageUri: string) {
+  function imageTakenHandller (imageUri: string): void {
     setSelectedImage(imageUri)
   }
 
-  const pickLocationHandler = useCallback((location: any) => {
+  const pickLocationHandler = useCallback((location: MapLocation, address: string) => {
     setPickedLocation(location)
+    setAddress(address)
   }, [])
 
-  function savePlaceHandler () {
-    const placeData = new Place(enteredTitle, selectedImage, pickedLocation)
+  function savePlaceHandler (): void {
+    const placeData = new Place(enteredTitle, selectedImage, address, pickedLocation)
     onCreatePlace(placeData)
   }
 

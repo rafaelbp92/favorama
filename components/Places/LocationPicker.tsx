@@ -1,105 +1,109 @@
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, View } from 'react-native'
 import {
   PermissionStatus,
   getCurrentPositionAsync,
-  useForegroundPermissions,
-} from "expo-location";
-import OutlinedButton from "../ui/OutlinedButton";
-import { Colors } from "../../constants/Colors";
-import { useEffect, useState } from "react";
-import { getAddress, getMapPreview } from "../../utils/location";
+  useForegroundPermissions
+} from 'expo-location'
+import OutlinedButton from '../ui/OutlinedButton'
+import { Colors } from '../../constants/Colors'
+import { useEffect, useState } from 'react'
+import { getAddress, getMapPreview } from '../../utils/location'
 import {
   useIsFocused,
   useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+  useRoute
+} from '@react-navigation/native'
+import { type MapLocation } from '../../models/Location'
 
-type Location = {
-  lat: number;
-  lng: number;
-};
+export interface Props {
+  onPickLocation: (location: MapLocation, address: string) => void
+}
 
-export type Props = {
-  onPickLocation: (a: any) => void;
-};
-
-const LocationPicker = ({ onPickLocation }: Props) => {
-  const [pickedLocation, setPickedLocation] = useState<Location | undefined>();
-  const [locationPermission, requestPermission] = useForegroundPermissions();
-  const navigation = useNavigation();
-  const route = useRoute<any>();
-  const isFocused = useIsFocused();
+const LocationPicker: React.FC<Props> = ({ onPickLocation }: Props) => {
+  const [pickedLocation, setPickedLocation] = useState<MapLocation | undefined>()
+  const [locationPermission, requestPermission] = useForegroundPermissions()
+  const navigation = useNavigation()
+  const route = useRoute<any>()
+  const isFocused = useIsFocused()
 
   useEffect(() => {
     const mapPickedlocation = isFocused &&
-      route.params && {
-        lat: route.params.pickedLocation.latitude,
-        lng: route.params.pickedLocation.longitude,
-      };
+      route.params !== undefined
+      ? {
+          latitude: route.params.pickedLocation.latitude,
+          longitude: route.params.pickedLocation.longitude
+        }
+      : undefined
 
-    if (mapPickedlocation) {
-      setPickedLocation(mapPickedlocation);
+    if (mapPickedlocation !== undefined) {
+      setPickedLocation(mapPickedlocation)
     }
-  }, [route, isFocused]);
+  }, [route, isFocused])
 
   useEffect(() => {
-    async function handleLocation() {
-      if (pickedLocation) {
+    async function handleLocation (): Promise<void> {
+      if (pickedLocation !== undefined) {
         const address = await getAddress(
-          pickedLocation.lat,
-          pickedLocation.lng
-        );
-        onPickLocation({ ...pickedLocation, address });
+          pickedLocation.latitude,
+          pickedLocation.longitude
+        )
+        onPickLocation(pickedLocation, address)
       }
     }
 
-    handleLocation();
-  }, [pickedLocation, onPickLocation]);
+    void handleLocation()
+  }, [pickedLocation, onPickLocation])
 
-  async function verifyPermissions() {
+  async function verifyPermissions (): Promise<boolean> {
     if (locationPermission?.status === PermissionStatus.UNDETERMINED) {
-      const permissionResponse = await requestPermission();
+      const permissionResponse = await requestPermission()
 
-      return permissionResponse.granted;
+      return permissionResponse.granted
     }
 
     if (locationPermission?.status === PermissionStatus.DENIED) {
       Alert.alert(
-        "Required permissions",
-        "The app needs permission to the camera"
-      );
-      return false;
+        'Required permissions',
+        'The app needs permission to the camera'
+      )
+      return false
     }
 
-    return true;
+    return true
   }
 
-  async function getLocationHandler() {
-    const hasPermission = await verifyPermissions();
-
-    if (!hasPermission) {
-      return;
-    }
-    const location = await getCurrentPositionAsync();
-    setPickedLocation({
-      lat: location.coords.latitude,
-      lng: location.coords.longitude,
-    });
+  function getLocationHandler (): void {
+    verifyPermissions().then((hasPermission) => {
+      if (hasPermission) {
+        void getCurrentPositionAsync()
+          .then((location) => {
+            setPickedLocation({
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude
+            })
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 
-  function pickOnMapHandler() {
-    navigation.navigate("Map" as never);
+  function pickOnMapHandler (): void {
+    navigation.navigate('Map' as never)
   }
 
-  let locationPreview = <Text>No location picked</Text>;
+  let locationPreview = <Text>No location picked</Text>
 
-  if (pickedLocation) {
+  if (pickedLocation !== undefined) {
     locationPreview = (
       <Image
         style={styles.image}
-        source={{ uri: getMapPreview(pickedLocation.lat, pickedLocation.lng) }}
+        source={{ uri: getMapPreview(pickedLocation.latitude, pickedLocation.longitude) }}
       />
-    );
+    )
   }
 
   return (
@@ -114,29 +118,29 @@ const LocationPicker = ({ onPickLocation }: Props) => {
         </OutlinedButton>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default LocationPicker;
+export default LocationPicker
 
 const styles = StyleSheet.create({
   mapPreview: {
-    width: "100%",
+    width: '100%',
     height: 200,
     marginVertical: 8,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.primary100,
-    borderRadius: 4,
+    borderRadius: 4
   },
   actions: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
   image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 4,
-  },
-});
+    width: '100%',
+    height: '100%',
+    borderRadius: 4
+  }
+})
