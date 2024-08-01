@@ -35,26 +35,30 @@ const ImagePicker: React.FC<Props> = ({ onImageTake }: Props) => {
     return true
   }
 
-  async function takeImageHandler (): Promise<void> {
-    const hasPermission = await verifyPermissions()
-    if (!hasPermission) {
-      return
-    }
-    const image = await launchCameraAsync({
-      allowsEditing: true,
-      aspect: [16, 9],
-      quality: 0.5
+  function takeImageHandler (): void {
+    verifyPermissions().then((hasPermission) => {
+      if (hasPermission) {
+        launchCameraAsync({
+          allowsEditing: true,
+          aspect: [16, 9],
+          quality: 0.5
+        }).then((image) => {
+          if (image.assets !== null && (image.assets.length > 0)) {
+            setPickedImage(image.assets[0].uri)
+            onImageTake(image.assets[0].uri)
+          }
+        }).catch((error) => {
+          console.log(error)
+        })
+      }
+    }).catch((error) => {
+      console.log(error)
     })
-
-    if (image.assets && (image.assets.length > 0)) {
-      setPickedImage(image.assets[0].uri)
-      onImageTake(image.assets[0].uri)
-    }
   }
 
   let imagePreview = <Text>No image preview</Text>
 
-  if (pickedImage) {
+  if (pickedImage !== undefined) {
     imagePreview = <Image source={{ uri: pickedImage }} style={styles.image} />
   }
 

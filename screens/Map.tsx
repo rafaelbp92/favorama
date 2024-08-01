@@ -9,24 +9,26 @@ export interface Props {
   route: any
 }
 
-const Map = ({ navigation, route }: Props) => {
-  const initialLocation = route.params && {
-    latitude: route.params.initialLat,
-    longitude: route.params.initialLng
-  }
+const Map: React.FC<Props> = ({ navigation, route }: Props) => {
+  const initialLocation = route.params !== undefined
+    ? {
+        latitude: route.params.initialLat,
+        longitude: route.params.initialLng
+      }
+    : undefined
 
   const [selectLocation, setSelectedLocation] =
-    useState<MapLocation>(initialLocation)
+    useState<MapLocation | undefined>(initialLocation)
 
   const region = {
-    latitude: initialLocation ? initialLocation.latitude : 37.78,
-    longitude: initialLocation ? initialLocation.longitude : -122.43,
+    latitude: initialLocation !== undefined ? initialLocation.latitude : 37.78,
+    longitude: initialLocation !== undefined ? initialLocation.longitude : -122.43,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.042
   }
 
-  function selectLocationHandler (event: MapPressEvent) {
-    if (initialLocation) return
+  function selectLocationHandler (event: MapPressEvent): void {
+    if (initialLocation !== undefined) return
     const lat = event.nativeEvent.coordinate.latitude
     const lng = event.nativeEvent.coordinate.longitude
 
@@ -34,7 +36,7 @@ const Map = ({ navigation, route }: Props) => {
   }
 
   const savePickedLocationHandler = useCallback(() => {
-    if (!selectLocation) {
+    if (selectLocation === undefined) {
       Alert.alert('No location picked!')
       return
     }
@@ -43,7 +45,7 @@ const Map = ({ navigation, route }: Props) => {
   }, [navigation, selectLocation])
 
   useLayoutEffect(() => {
-    if (initialLocation) return
+    if (initialLocation !== undefined) return
     navigation.setOptions({
       headerRight: ({ tintColor }: any) => (
         <IconButton
@@ -62,7 +64,7 @@ const Map = ({ navigation, route }: Props) => {
       initialRegion={region}
       onPress={selectLocationHandler}
     >
-      {selectLocation && (
+      {selectLocation !== undefined && (
         <Marker
           title="Picked Location"
           coordinate={{

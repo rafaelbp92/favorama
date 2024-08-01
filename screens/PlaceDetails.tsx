@@ -22,17 +22,17 @@ function PlaceDetails ({ route, navigation }: Props): React.JSX.Element {
   const selectedPlaceId = route.params.placeId
   useEffect(() => {
     async function loadPlaceData (): Promise<void> {
-      const placeDetails = await fetchPlaceDetails(selectedPlaceId)
+      const placeDetails = await fetchPlaceDetails(selectedPlaceId as string)
       setPlace(placeDetails)
       navigation.setOptions({
         title: placeDetails.title
       })
     }
 
-    loadPlaceData()
+    void loadPlaceData()
   }, [selectedPlaceId])
 
-  if (!place) {
+  if (place === undefined) {
     return (
       <View style={styles.fallback}>
         <Text>Loading place data...</Text>
@@ -42,10 +42,10 @@ function PlaceDetails ({ route, navigation }: Props): React.JSX.Element {
 
   return (
     <ScrollView>
-      <Image style={styles.image} source={{ uri: place?.imageUri }} />
+      <Image style={styles.image} source={{ uri: place.imageUri }} />
       <View style={styles.locationContainer}>
         <View style={styles.addressContainer}>
-          <Text style={styles.address}>{place?.address}</Text>
+          <Text style={styles.address}>{place.address}</Text>
         </View>
       </View>
       <OutlinedButton icon="map" onPress={showOnMapHandler}>
