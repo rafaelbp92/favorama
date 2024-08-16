@@ -21,7 +21,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.rafaelbp92.favorama"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +37,11 @@
           "cameraPermission": "The app accesses your camera to take photos of your favorites places."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1cde83e0-8a9d-47a4-a26f-5cd682090f66"
+      }
+    }
   }
 }
